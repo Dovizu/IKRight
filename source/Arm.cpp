@@ -18,8 +18,8 @@ public:
     /**
      *  @return angle relative to root
      */
-    float theta()   {return ltheta+parent->theta();}
-    float phi()     {return lphi+parent->phi();}
+    virtual float theta()   {return ltheta+parent->theta();}
+    virtual float phi()     {return lphi+parent->phi();}
     
     /**
      *  @return the position relative to root
@@ -28,7 +28,7 @@ public:
      *  y = r*sin(theta)*sin(phi)
      *  z = r*cos(phi)
      */
-    Vector3f position() {
+    virtual Vector3f position() {
         return Vector3f(length*cos(ltheta+parent->theta())*sin(lphi+parent->phi()), //x
                         length*sin(ltheta+parent->theta())*sin(lphi+parent->phi()), //y
                         length*cos(lphi+parent->phi()))                             //z
@@ -41,7 +41,7 @@ public:
      *  @param angles: a list of theta-phi pairs, the most back is the most outbound
      *  @warning: angles.size() == number of links from this to parents
      */
-    void moveby(vector<AnglePair>& angles) {
+    virtual void moveby(vector<AnglePair>& angles) {
         ltheta += angles.back().first;
         lphi += angles.back().second;
         angles.pop_back();
@@ -66,13 +66,11 @@ public:
 
 #pragma mark - Arm Class
 
-size_t Arm::size() {return numLinks;}
-
 /**
  *  Construct an Arm by iterating through LinkData structs
  */
 Arm::Arm(vector<LinkInfo>& linkData, Vector3f& root) {
-    Link *parent = new Root(root); ++numLinks;
+    Link *parent = new Root(root);
     for (auto& lData : linkData) {
         Link* link = new Link();
         link->ltheta = lData.theta;
@@ -83,4 +81,10 @@ Arm::Arm(vector<LinkInfo>& linkData, Vector3f& root) {
         ++numLinks;
     }
     endLink = parent;
+}
+
+size_t Arm::size() {return numLinks;}
+
+Vector3f Arm::position() {
+    return endLink->position();
 }

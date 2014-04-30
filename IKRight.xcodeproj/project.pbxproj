@@ -1019,10 +1019,10 @@
 				F154BFB218EE8F4F0083974A /* IKRight.h */,
 				F154BFB118EE8F4F0083974A /* IKRight.cpp */,
 				F15261E718EFA6200012EA12 /* UnitTest.cpp */,
-				F154BFB318EE90200083974A /* utilities.h */,
-				F154BFB418EE90200083974A /* utilities.cpp */,
 				F1114065191192D4009C76E0 /* Arm.cpp */,
 				F1114066191192D4009C76E0 /* Arm.h */,
+				F154BFB318EE90200083974A /* utilities.h */,
+				F154BFB418EE90200083974A /* utilities.cpp */,
 			);
 			path = source;
 			sourceTree = "<group>";

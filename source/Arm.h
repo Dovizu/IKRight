@@ -25,6 +25,7 @@ class Arm {
 public:
     Arm(vector<LinkInfo>& linkData, Vector3f& root);
     size_t size();
+    Vector3f position();
 };
 
 #endif /* defined(__IKRight__Arm__) */

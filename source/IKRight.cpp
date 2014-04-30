@@ -21,13 +21,18 @@
 int main(int argc, char *argv[]) {
     vector<CmdLineOptResult> *results;
     string basePath;
-    string options = "--testOpenGL(0)"; //test OpenGL, GLEW, and GLFW
-    options.append("--testBEZParser(0)"); //test BEZParser for files at "bezFiles/"
+    string options = "--testArm(0)"; //test Arm functionality
 
     getCmdLineOptions(argc, argv, options, &results);
 
     string directoryName;
     string fileName;
+    
+    for (auto& result : *results) {
+        if (result.optName.compare("--testArm")==0) {
+            testArm();
+        }
+    }
 
     return 0;
 }

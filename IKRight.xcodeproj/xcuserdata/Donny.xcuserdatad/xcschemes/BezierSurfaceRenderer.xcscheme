@@ -40,44 +40,12 @@
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
       <PathRunnable
-         FilePath = "/Users/Donny/Dropbox/CS 184/assignments/BezierSurfaceRenderer/renderBezier">
+         FilePath = "/Users/Donny/Dropbox/CS 184/assignments/IKRight/IKRight">
       </PathRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "--testBEZParser"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "-f bezFiles/gourd.bez 0.1 -a"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "-f bezFiles/bunny.bez 0.01"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "-f bezFiles/bunny.bez 0.1 -a"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "-f bezFiles/shuttle.bez 0.1"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "-f bezFiles/teapot.bez 0.01 -a"
+            argument = "--testArm"
             isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "-d bezFiles/ 0.1"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "--testAdaptive"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "--testUniform"
-            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>
