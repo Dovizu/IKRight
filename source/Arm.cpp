@@ -88,3 +88,7 @@ size_t Arm::size() {return numLinks;}
 Vector3f Arm::position() {
     return endLink->position();
 }
+
+void Arm::moveby(vector<AnglePair>& angles) {
+    endLink->moveby(angles);
+}

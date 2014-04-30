@@ -28,7 +28,19 @@ void testArm() {
     links.push_back(link2);
     links.push_back(link3);
     Arm arm(links, root);
+    cout << "Testing construction" << endl;
     cout << "Should be: (0, 1.4, 1)" << endl;
+    cout << arm.position() << endl;
+    cout << "Testing moving" << endl;
+    vector<AnglePair> moves;
+    AnglePair move1(-M_PI/4, 0);
+    AnglePair move2(M_PI/4, M_PI/2);
+    AnglePair move3(-3*M_PI/4, -M_PI/2);
+    moves.push_back(move1);
+    moves.push_back(move2);
+    moves.push_back(move3);
+    arm.moveby(moves);
+    cout << "Should be: (3, 0, 0)" << endl;
     cout << arm.position() << endl;
 }
 

@@ -26,6 +26,7 @@ public:
     Arm(vector<LinkInfo>& linkData, Vector3f& root);
     size_t size();
     Vector3f position();
+    void moveby(vector<AnglePair>& angles);
 };
 
 #endif /* defined(__IKRight__Arm__) */
