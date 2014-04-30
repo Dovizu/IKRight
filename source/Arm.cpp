@@ -7,24 +7,28 @@
 
 #include "Arm.h"
 
-typedef pair<float, float> AnglePair;
+#pragma mark - Link and Root Class
 
 class Link {
-public:
+    friend class Arm;
+protected:
     float ltheta=0.0, lphi=0.0, length=0.0; //l stands for local
     Link* parent; //inbound link
-    
+public:
+    /**
+     *  @return angle relative to root
+     */
     float theta()   {return ltheta+parent->theta();}
     float phi()     {return lphi+parent->phi();}
     
     /**
-     *  @return the position in the arm's coordinate
+     *  @return the position relative to root
+     *  @discussion
+     *  x = r*cos(theta)*sin(phi)
+     *  y = r*sin(theta)*sin(phi)
+     *  z = r*cos(phi)
      */
     Vector3f position() {
-        /* x = r*cos(theta)*sin(phi)
-         * y = r*sin(theta)*sin(phi)
-         * z = r*cos(phi)
-         */
         return Vector3f(length*cos(ltheta+parent->theta())*sin(lphi+parent->phi()), //x
                         length*sin(ltheta+parent->theta())*sin(lphi+parent->phi()), //y
                         length*cos(lphi+parent->phi()))                             //z
@@ -34,8 +38,8 @@ public:
     /**
      *  Move by specified theta and phi
      *
-     *  @param angles a list of theta-phi pairs, the most back is the most outbound
-     *  Invariance: angles.size() == number of links
+     *  @param angles: a list of theta-phi pairs, the most back is the most outbound
+     *  @warning: angles.size() == number of links from this to parents
      */
     void moveby(vector<AnglePair>& angles) {
         ltheta += angles.back().first;
@@ -46,7 +50,7 @@ public:
 };
 
 /**
- *  NullLink functions as a sentinel in the linked structure
+ *  Root functions as a sentinel in the linked structure
  */
 class Root : public Link {
     Vector3f rootPos = Vector3f(0,0,0);
@@ -59,6 +63,8 @@ public:
         ASSERT(angles.size()==0, "more angles to move than there are links");
     }
 };
+
+#pragma mark - Arm Class
 
 size_t Arm::size() {return numLinks;}
 

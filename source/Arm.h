@@ -15,6 +15,7 @@ typedef struct {
     float theta;
     float phi;
 } LinkInfo;
+typedef pair<float, float> AnglePair;
 
 class Link;
 
