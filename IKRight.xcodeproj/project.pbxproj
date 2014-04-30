@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		F1114065191192D4009C76E0 /* Arm.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Arm.cpp; sourceTree = "<group>"; };
+		F1114066191192D4009C76E0 /* Arm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Arm.h; sourceTree = "<group>"; };
 		F15261E718EFA6200012EA12 /* UnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = UnitTest.cpp; sourceTree = "<group>"; };
 		F154BE4118EE8C890083974A /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		F154BE4718EE8F4F0083974A /* Array */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Array; sourceTree = "<group>"; };
@@ -1019,6 +1021,8 @@
 				F15261E718EFA6200012EA12 /* UnitTest.cpp */,
 				F154BFB318EE90200083974A /* utilities.h */,
 				F154BFB418EE90200083974A /* utilities.cpp */,
+				F1114065191192D4009C76E0 /* Arm.cpp */,
+				F1114066191192D4009C76E0 /* Arm.h */,
 			);
 			path = source;
 			sourceTree = "<group>";

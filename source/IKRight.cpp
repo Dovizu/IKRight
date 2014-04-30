@@ -9,18 +9,26 @@
  +––––––––––––––––––––––––––––––––––––––+
  |Main Functions                        |
  +––––––––––––––––––––––––––––––––––––––+
- Process command line options and kickstart tessellation and OpenGL
+ */
+/**
+ *  IKRight Main Function
+ *
+ *  @param argc default argc
+ *  @param argv default argv
+ *
+ *  @return status code
  */
 int main(int argc, char *argv[]) {
     vector<CmdLineOptResult> *results;
     string basePath;
     string options = "--testOpenGL(0)"; //test OpenGL, GLEW, and GLFW
     options.append("--testBEZParser(0)"); //test BEZParser for files at "bezFiles/"
-    
+
     getCmdLineOptions(argc, argv, options, &results);
 
     string directoryName;
     string fileName;
-    
+
     return 0;
 }
+

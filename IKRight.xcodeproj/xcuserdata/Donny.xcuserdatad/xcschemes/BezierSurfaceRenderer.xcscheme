@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "F154BE3B18EE8C5D0083974A"
-               BuildableName = "BezierSurfaceRenderer"
+               BuildableName = "IKRight"
                BlueprintName = "IKRight"
                ReferencedContainer = "container:IKRight.xcodeproj">
             </BuildableReference>

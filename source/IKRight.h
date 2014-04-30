@@ -8,6 +8,7 @@
 #define __IKRight__IKRight__
 
 #include "utilities.h"
+#include "Arm.h"
 #include "UnitTest.cpp"
 
 

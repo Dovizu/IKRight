@@ -20,9 +20,9 @@ else
 endif
 
 PRODUCT = IKRight
-OBJS = $(BUILD)/IKRight.o $(BUILD)/utilities.o
+OBJS = $(BUILD)/IKRight.o $(BUILD)/utilities.o $(BUILD)/Arm.o
 
-IKRight: IKRight.o utilities.o
+IKRight: IKRight.o utilities.o Arm.o
 	$(CC) $(LFLAGS) $(OBJS) -o $(PRODUCT)
 
 IKRight.o: $(SRC)/IKRight.cpp
@@ -30,6 +30,9 @@ IKRight.o: $(SRC)/IKRight.cpp
 
 utilities.o: $(SRC)/utilities.cpp
 	$(CC) $(CFLAGS) $(SRC)/utilities.cpp -o $(BUILD)/utilities.o
+
+Arm.o: $(SRC)/Arm.cpp
+	$(CC) $(CFLAGS) $(SRC)/Arm.cpp -o $(BUILD)/Arm.o
 
 clean:
 	$(RM) $(BUILD)/*.o $(PRODUCT)
