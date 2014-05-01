@@ -8,88 +8,11 @@
 #include "Arm.h"
 
 #pragma mark - Link and Root Class
-
 class Link {
     friend class Arm;
 protected:
-    float ltheta=0.0, lphi=0.0, length=0.0; //l stands for local
-    Link* parent; //inbound link
+    float theta=0.0, phi=0.0, length=0.0; //l stands for local
     GLUquadricObj *quadric = gluNewQuadric();
-public:
-    /**
-     *  @return angle relative to root
-     */
-    virtual float theta()   {return ltheta+parent->theta();}
-    virtual float phi()     {return lphi+parent->phi();}
-    
-    /**
-     *  @return the position relative to root
-     *  @discussion
-     *  x = r*cos(theta)*sin(phi)
-     *  y = r*sin(theta)*sin(phi)
-     *  z = r*cos(phi)
-     */
-    virtual Vector3f position() {
-        return Vector3f(length*cos(ltheta+parent->theta())*sin(lphi+parent->phi()), //x
-                        length*sin(ltheta+parent->theta())*sin(lphi+parent->phi()), //y
-                        length*cos(lphi+parent->phi()))                             //z
-                        + parent->position();                                       //parent
-    }
-    
-    /**
-     *  Move by specified theta and phi
-     *
-     *  @param angles: a list of theta-phi pairs, the most back is the most outbound
-     *  @warning: angles.size() == number of links from this to parents
-     */
-    virtual void moveby(vector<AnglePair>& angles) {
-        ltheta += angles.back().first;
-        lphi += angles.back().second;
-        angles.pop_back();
-        parent->moveby(angles);
-    }
-    
-    /**
-     *  Draws itself on screen
-     */
-    virtual void draw() {
-        
-        //this algorithm is super inefficient, need improvement
-        parent->draw();
-        glPushMatrix();
-        
-        Vector3f pos = parent->position();
-        glTranslatef(pos(0), pos(1), pos(2));
-        
-        glRotatef(degrees(theta()), 0.0, 0.0, 1.0);
-        glRotatef(degrees(phi()), 0.0, 1.0, 0.0);
-        glColor3f(1.0f, 0.0f, 0.0f);
-        gluCylinder(quadric, 1, 0, length, 20, 20);
- 
-        pos = position();
-        glColor3f(0.0f, 1.0f, 0.0f);
-        glutSolidSphere(1, 20, 20);
-        glPopMatrix();
-    }
-};
-
-/**
- *  Root functions as a sentinel in the linked structure
- */
-class Root : public Link {
-    Vector3f rootPos = Vector3f(0,0,0);
-public:
-    Root(Vector3f pos) {rootPos = pos;}
-    float theta()   {return 0.0;} //base case
-    float phi()     {return 0.0;} //base case
-    Vector3f position() {return rootPos;}
-    void moveby(vector<AnglePair>& angles) {
-        ASSERT(angles.size()==0, "more angles to move than there are links");
-    }
-    void draw() {
-        glColor3f(0.0f, 1.0f, 0.0f);
-        glutSolidSphere(1, 20, 20);
-    }
 };
 
 #pragma mark - Arm Class
@@ -98,36 +21,51 @@ public:
  *  Construct an Arm by iterating through LinkData structs
  */
 Arm::Arm(vector<LinkInfo>& linkData, Vector3f& root) {
-    Link *parent = new Root(root);
-    for (auto& lData : linkData) {
+    rootPos = root;
+    for (int i=0; i<linkData.size(); ++i) {
+        LinkInfo& lData = linkData[i];
         Link* link = new Link();
-        link->ltheta = lData.theta;
-        link->lphi = lData.phi;
+        link->theta = lData.theta;
+        link->phi = lData.phi;
         link->length = lData.length;
-        link->parent = parent;
-        parent = link;
-        ++numLinks;
+        links.push_back(link);
     }
-    endLink = parent;
 }
 
 /**
  *  @return the size of links excluding root
  */
-size_t Arm::size() {return numLinks;}
+size_t Arm::size() {return links.size();}
 
 /**
  *  @return the end effector's position
  */
 Vector3f Arm::position() {
-    return endLink->position();
+    Vector3f pos = rootPos;
+    float theta=0;
+    float phi=0;
+    float l=0;
+    for (int i=0; i<links.size(); ++i) {
+        theta += links[i]->theta;
+        phi += links[i]->phi;
+        l = links[i]->length;
+        pos(0) += l*cos(theta)*sin(phi);
+        pos(1) += l*sin(theta)*sin(phi);
+        pos(2) += l*cos(phi);
+    }
+    return pos;
 }
 /**
  *  moves the arm by the specified list of angle deltas
  *  @param angles list of AnglePairs that describe the delta of each angle
  */
+
 void Arm::moveby(vector<AnglePair>& angles) {
-    endLink->moveby(angles);
+    ASSERT(angles.size()==links.size(), "Num of angles doesn't match num of links");
+    for (int i=0; i<angles.size(); ++i) {
+        links[i]->theta += angles[i].first;
+        links[i]->phi += angles[i].second;
+    }
 }
 
 /**
@@ -135,5 +73,33 @@ void Arm::moveby(vector<AnglePair>& angles) {
  */
 void Arm::graph() {
     //need to Assert that OPENGL is initialized and working
-    endLink->draw();
+    Vector3f pos = rootPos;
+    glColor3f(0.0f, 1.0f, 1.0f);
+    glutSolidSphere(2, 20, 20);
+    
+    float theta=0, phi=0, l=0;
+    for (int i=0; i<links.size(); ++i) {
+        
+        theta += links[i]->theta;
+        phi += links[i]->phi;
+        l = links[i]->length;
+        
+        glPushMatrix();
+        glTranslatef(pos(0), pos(1), pos(2));
+        glRotatef(degrees(theta), 0.0, 0.0, 1.0);
+        glRotatef(degrees(phi), 0.0, 1.0, 0.0);
+        glColor3f(1.0f, 0.0f, 0.0f);
+        gluCylinder(links[i]->quadric, 1, 0, l, 20, 20);
+        glColor3f(0.0f, 1.0f, 0.0f);
+        glutSolidSphere(1, 20, 20);
+        glPopMatrix();
+        
+        pos(0) += l*cos(theta)*sin(phi);
+        pos(1) += l*sin(theta)*sin(phi);
+        pos(2) += l*cos(phi);
+    }
+}
+
+MatrixXf Arm::jacobian() {
+    MatrixXf jac = MatrixXf::Zero(3, links.size()*2);
 }
