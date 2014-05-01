@@ -16,6 +16,9 @@ cs61b-bw
 ###Compile Instruction
 `make`
 
+###Credits
+- [OpenGL Skeleton from Alenxandros Dermenakis tutorials](http://www.alexandrosdermenakis.com)
+
 Demonstration
 ====================
 

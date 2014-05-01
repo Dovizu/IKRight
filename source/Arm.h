@@ -16,6 +16,7 @@ typedef struct {
     float phi;
 } LinkInfo;
 typedef pair<float, float> AnglePair;
+#define degrees(x) x*180/3.1415926
 
 class Link;
 
@@ -27,6 +28,7 @@ public:
     size_t size();
     Vector3f position();
     void moveby(vector<AnglePair>& angles);
+    void graph();
 };
 
 #endif /* defined(__IKRight__Arm__) */

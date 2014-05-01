@@ -14,6 +14,7 @@ class Link {
 protected:
     float ltheta=0.0, lphi=0.0, length=0.0; //l stands for local
     Link* parent; //inbound link
+    GLUquadricObj *quadric = gluNewQuadric();
 public:
     /**
      *  @return angle relative to root
@@ -47,6 +48,29 @@ public:
         angles.pop_back();
         parent->moveby(angles);
     }
+    
+    /**
+     *  Draws itself on screen
+     */
+    virtual void draw() {
+        
+        //this algorithm is super inefficient, need improvement
+        parent->draw();
+        glPushMatrix();
+        
+        Vector3f pos = parent->position();
+        glTranslatef(pos(0), pos(1), pos(2));
+        
+        glRotatef(degrees(theta()), 0.0, 0.0, 1.0);
+        glRotatef(degrees(phi()), 0.0, 1.0, 0.0);
+        glColor3f(1.0f, 0.0f, 0.0f);
+        gluCylinder(quadric, 1, 0, length, 20, 20);
+ 
+        pos = position();
+        glColor3f(0.0f, 1.0f, 0.0f);
+        glutSolidSphere(1, 20, 20);
+        glPopMatrix();
+    }
 };
 
 /**
@@ -61,6 +85,10 @@ public:
     Vector3f position() {return rootPos;}
     void moveby(vector<AnglePair>& angles) {
         ASSERT(angles.size()==0, "more angles to move than there are links");
+    }
+    void draw() {
+        glColor3f(0.0f, 1.0f, 0.0f);
+        glutSolidSphere(1, 20, 20);
     }
 };
 
@@ -83,12 +111,29 @@ Arm::Arm(vector<LinkInfo>& linkData, Vector3f& root) {
     endLink = parent;
 }
 
+/**
+ *  @return the size of links excluding root
+ */
 size_t Arm::size() {return numLinks;}
 
+/**
+ *  @return the end effector's position
+ */
 Vector3f Arm::position() {
     return endLink->position();
 }
-
+/**
+ *  moves the arm by the specified list of angle deltas
+ *  @param angles list of AnglePairs that describe the delta of each angle
+ */
 void Arm::moveby(vector<AnglePair>& angles) {
     endLink->moveby(angles);
+}
+
+/**
+ *  Graph the entire arm using OpenGL
+ */
+void Arm::graph() {
+    //need to Assert that OPENGL is initialized and working
+    endLink->draw();
 }
