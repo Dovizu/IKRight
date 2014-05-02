@@ -102,4 +102,26 @@ void Arm::graph() {
 
 MatrixXf Arm::jacobian() {
     MatrixXf jac = MatrixXf::Zero(3, links.size()*2);
+    float theta=0, phi=0;
+    for (int li=0; li<links.size(); ++li) {
+        //col0 = theta, col1 = phi
+        Link& l = links[li];
+        theta += l.theta; phi += l.phi;
+        //compute partial derivatives
+        float pXpTheta = -l.length*sin(theta)*sin(phi);
+        float pXpPhi = l.length*cos(theta)*cos(phi);
+        float pYpTheta = l.length*cos(theta)*sin(phi);
+        float pYpPhi = l.length*sin(theta)*cos(phi);
+        float pZpTheta = 0.0f;
+        float pZpPhi = -l.length*sin(phi);
+        //compute the Jacobian
+        for (int colIdx=0; colIdx<li; ++colIdx) {
+            jac(0, 2*colIdx) += pXpTheta;
+            jac(1, 2*colIdx) += pYpTheta;
+            jac(2, 2*colIdx) += pZpTheta;
+            jac(0, 2*colIdx+1) += pXpPhi;
+            jac(1, 2*colIdx+1) += pYpPhi;
+            jac(2, 2*colIdx+1) += pZpPhi;
+        }
+    }
 }
