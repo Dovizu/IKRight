@@ -11,8 +11,21 @@
 class Link {
     friend class Arm;
 protected:
-    float theta=0.0, phi=0.0, length=0.0; //l stands for local
+    float length, x, y, z, angle; //normalized x, y, z and angle
     GLUquadricObj *quadric = gluNewQuadric();
+public:
+    Link(float angle, Vector3f& axis, float length) {
+        Vector3f nAxis = axis.normalized();
+        x=nAxis(0); y=nAxis(1); z=nAxis(2);
+        this->angle = angle;
+        this->length = length;
+    }
+    
+    Transform3f tf() {
+        Transform3f t = Transform3f(Translation3f(0,0,length));
+        t = Transform3f(AngleAxisf(angle, Vector3f(x,y,z)))*t;
+        return t;
+    }
 };
 
 #pragma mark - Arm Class
@@ -24,10 +37,7 @@ Arm::Arm(vector<LinkInfo>& linkData, Vector3f& root) {
     rootPos = root;
     for (int i=0; i<linkData.size(); ++i) {
         LinkInfo& lData = linkData[i];
-        Link* link = new Link();
-        link->theta = lData.theta;
-        link->phi = lData.phi;
-        link->length = lData.length;
+        Link* link = new Link(lData.angle, lData.axis, lData.length);
         links.push_back(link);
     }
 }
@@ -41,18 +51,11 @@ size_t Arm::size() {return links.size();}
  *  @return the end effector's position
  */
 Vector3f Arm::position() {
-    Vector3f pos = rootPos;
-    float theta=0;
-    float phi=0;
-    float l=0;
-    for (int i=0; i<links.size(); ++i) {
-        theta += links[i]->theta;
-        phi += links[i]->phi;
-        l = links[i]->length;
-        pos(0) += l*cos(theta)*sin(phi);
-        pos(1) += l*sin(theta)*sin(phi);
-        pos(2) += l*cos(phi);
+    Vector3f pos = Vector3f::Zero();
+    for (int li=0; li<links.size(); ++li) {
+        pos = links[li]->tf()*pos;
     }
+    pos = Translation3f(rootPos(0),rootPos(1),rootPos(2))*pos;
     return pos;
 }
 /**
@@ -60,6 +63,8 @@ Vector3f Arm::position() {
  *  @param angles list of AnglePairs that describe the delta of each angle
  */
 
+
+/*
 void Arm::moveby(vector<AnglePair>& angles) {
     ASSERT(angles.size()==links.size(), "Num of angles doesn't match num of links");
     for (int i=0; i<angles.size(); ++i) {
@@ -67,39 +72,31 @@ void Arm::moveby(vector<AnglePair>& angles) {
         links[i]->phi += angles[i].second;
     }
 }
+ */
 
 /**
  *  Graph the entire arm using OpenGL
  */
+
+
 void Arm::graph() {
     //need to Assert that OPENGL is initialized and working
-    Vector3f pos = rootPos;
+    glPushMatrix();
     glColor3f(0.0f, 1.0f, 1.0f);
     glutSolidSphere(2, 20, 20);
-    
-    float theta=0, phi=0, l=0;
-    for (int i=0; i<links.size(); ++i) {
-        
-        theta += links[i]->theta;
-        phi += links[i]->phi;
-        l = links[i]->length;
-        
-        glPushMatrix();
-        glTranslatef(pos(0), pos(1), pos(2));
-        glRotatef(degrees(theta), 0.0, 0.0, 1.0);
-        glRotatef(degrees(phi), 0.0, 1.0, 0.0);
+    for (int li=links.size()-1; li>=0; --li) {
+        glRotatef(degrees(links[li]->angle), links[li]->x,links[li]->y,links[li]->z);
         glColor3f(1.0f, 0.0f, 0.0f);
-        gluCylinder(links[i]->quadric, 1, 0, l, 20, 20);
+        gluCylinder(links[li]->quadric, 1, 0, links[li]->length, 20, 20);
+        glTranslatef(0,0,links[li]->length);
         glColor3f(0.0f, 1.0f, 0.0f);
         glutSolidSphere(1, 20, 20);
-        glPopMatrix();
-        
-        pos(0) += l*cos(theta)*sin(phi);
-        pos(1) += l*sin(theta)*sin(phi);
-        pos(2) += l*cos(phi);
     }
+    glTranslatef(rootPos(0),rootPos(1),rootPos(2));
+    glPopMatrix();
 }
 
+/*
 MatrixXf Arm::jacobian() {
     MatrixXf jac = MatrixXf::Zero(3, links.size()*2);
     float theta=0, phi=0;
@@ -125,3 +122,5 @@ MatrixXf Arm::jacobian() {
         }
     }
 }
+ 
+ */

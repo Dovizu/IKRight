@@ -27,9 +27,9 @@ double fovy = 40.0;
 
 vector<LinkInfo> links;
 Vector3f root(0,0,0);
-LinkInfo link1 = {20, M_PI/4, M_PI/2};
-LinkInfo link2 = {20, -M_PI/4, -M_PI/2};
-LinkInfo link3 = {20, 3*M_PI/4, M_PI/2};
+LinkInfo link1 = {30, Vector3f(-1,1,0), M_PI/2};
+LinkInfo link2 = {20, Vector3f(-1,0,0), M_PI/2};
+//LinkInfo link3 = {20, 3*M_PI/4, M_PI/2};
 Arm* arm;
 
 Vector3f targetPoint = Vector3f::Zero();
@@ -141,7 +141,7 @@ int main(int argc, char *argv[]) {
     
     links.push_back(link1);
     links.push_back(link2);
-    links.push_back(link3);
+//    links.push_back(link3);
     arm = new Arm(links, root);
     
     // GLUT initialization.

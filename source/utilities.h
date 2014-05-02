@@ -59,9 +59,7 @@ typedef Translation<float, 3> Translation3f;
 typedef UniformScaling<float> Scalingf;
 typedef DiagonalMatrix<float, 3> Scaling3f;
 #define Scaling3f(X, Y, Z) Scaling((float)X, (float)Y, (float)Z)
-typedef Transform<float, 3, Affine> Transform3fAffine;
-typedef Transform<float, 3, Projective> Transform3fProjective;
-#define IdentityTransform() Transform<float, 3, Affine>(UniformScaling<float>(1.0))
+typedef Transform<float, 3, Affine> Transform3f;
 
 typedef enum {
     LightSourceDirectional,
