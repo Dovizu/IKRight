@@ -69,7 +69,7 @@ Vector3f Arm::position() {
  *  @param deltas: a list of deltas in order of rx, ry and rz, each tuple of three should correspond to a link
  *  @invarinace: size of deltas list should be three times links.size()
  */
-void Arm::moveby(Vector3f& deltas) {
+void Arm::moveby(VectorXf& deltas) {
     ASSERT(deltas.size()/3==links.size(), "Num of angles doesn't match num of links");
     for (int i=0; i<links.size(); ++i) {
         links[i]->x+=deltas[i*3+0];
@@ -78,7 +78,7 @@ void Arm::moveby(Vector3f& deltas) {
     }
 }
 
-void Arm::unmove(Vector3f& deltas) {
+void Arm::unmove(VectorXf& deltas) {
     ASSERT(deltas.size()/3==links.size(), "Num of angles doesn't match num of links");
     for (int i=0; i<links.size(); ++i) {
         links[i]->x-=deltas[i*3+0];
@@ -147,11 +147,40 @@ MatrixXf Arm::pseudoInverse() {
 bool Arm::update(Vector3f& g) {
     MatrixXf j_inv = pseudoInverse();
     Vector3f p = position();
-    Vector3f deltas = Vector3f::Zero(links.size()*3, 1);
+    VectorXf dR = VectorXf::Zero(links.size()*3, 1);
+
     //newton's method
     Vector3f deltaP = p - g;
-    
-    moveby(deltas);
+    if (!(deltaP.norm()<step)) {
+        deltaP = step*deltaP.normalized();
+    }
+
+    bool decreased = false;
+    VectorXf prime = VectorXf::Zero(links.size()*3, 1);
+    VectorXf func = VectorXf::Zero(links.size()*3, 1);
+
+    while (!decreased) {
+        prime = -j_inv*deltaP;
+        func = dR - j_inv*deltaP;
+        dR = dR - func.cwiseQuotient(prime);
+        cout << "new dR: "<< endl << dR << endl;
+        moveby(dR);
+        Vector3f newP = position();
+        cout << "old pos: "<<p(0)<<","<<p(1)<<","<<p(2)<<endl;
+        cout << "new pos: "<<newP(0)<<","<<newP(1)<<","<<newP(2)<<endl;
+        cout << "goal: "<<g(0)<<","<<g(1)<<","<<g(2)<<endl;
+//        unmove(dR);
+        
+        if ((newP-g).norm() < (p-g).norm()) {
+            decreased = true;
+        }else{
+//            dR = dR/2.0;
+            
+        }
+       
+    }
+
+    moveby(dR);
     graph();
     return (position()-g).norm() < tolerance;
 }
