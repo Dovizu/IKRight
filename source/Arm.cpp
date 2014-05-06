@@ -152,7 +152,7 @@ bool Arm::update(Vector3f& g) {
 
     //newton's method
     Vector3f deltaP = g - p;
-    cout << "P is: " << endl << p << endl;
+//    cout << "P is: " << endl << p << endl;
 //    if (!(deltaP.norm()<step)) {
 //        deltaP = step*deltaP.normalized();
 //    }
@@ -163,8 +163,8 @@ bool Arm::update(Vector3f& g) {
 
     dR = j_inv*deltaP;
 //    cout << "dR norm: " << dR.norm();
-//    dR.normalize();
-//    dR = step*dR;
+    dR.normalize();
+    dR = step*dR;
     
     
     int count = 0;
@@ -190,7 +190,7 @@ bool Arm::update(Vector3f& g) {
         }
        
     }
-    if (count==3) {
+    if (count==3 && !decreased) {
 //        dR = dR*8;
         moveby(dR);
     }

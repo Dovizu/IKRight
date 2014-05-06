@@ -29,13 +29,17 @@ vector<LinkInfo> links;
 Vector3f root(0,0,0);
 LinkInfo link1 = {30, Vector3f(-1,1,0), M_PI/2};
 LinkInfo link2 = {20, Vector3f(-1,0,0), M_PI/2};
+LinkInfo link3 = {10, Vector3f(-1,1,0), M_PI/2};
+LinkInfo link4 = {5, Vector3f(-1,0,0), M_PI/2};
 //LinkInfo link3 = {20, 3*M_PI/4, M_PI/2};
 Arm* arm;
-Vector3f goal(0, -15, 15);
+Vector3f goal(30, 0 , -50);
 bool resolved = false;
 Vector3f targetPoint = Vector3f::Zero();
 
 // This function is called to display the scene.
+float theta = 0;
+float degree = 3.1415926535897932384626433832795 / 180;
 void display () {
     glEnable(GL_LIGHTING);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -61,6 +65,10 @@ void display () {
         resolved = arm->update(goal);
     }
     resolved=false;
+    theta += degree/2;
+    goal(0)=cos(theta)*30;
+    goal(1)=sin(theta)*30;
+    cout << "Goal is: " << endl << goal << endl;
 
     arm->graph();
     
@@ -148,9 +156,11 @@ int main(int argc, char *argv[]) {
         }
     }
     
-    links.push_back(link1);
+    links.push_back(link4);
+    links.push_back(link3);
     links.push_back(link2);
-//    links.push_back(link3);
+    links.push_back(link1);
+
     arm = new Arm(links, root);
     
     // GLUT initialization.

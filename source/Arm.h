@@ -23,7 +23,7 @@ class Arm {
     vector<Link*> links; //links from end effector to root in reverse order
     Vector3f rootPos = Vector3f(0,0,0);
     float tolerance = 1;
-    float step = 0.1;
+    float step = 0.05;
 public:
     Arm(vector<LinkInfo>& linkData, Vector3f& root);
     //need to write destructor
