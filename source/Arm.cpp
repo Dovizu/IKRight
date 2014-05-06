@@ -156,38 +156,47 @@ bool Arm::update(Vector3f& g) {
 //    if (!(deltaP.norm()<step)) {
 //        deltaP = step*deltaP.normalized();
 //    }
-    cout << "deltaP is: " <<endl<<deltaP<<endl;
+//    cout << "deltaP is: " <<endl<<deltaP<<endl;
     bool decreased = false;
     VectorXf prime = VectorXf::Zero(links.size()*3, 1);
     VectorXf func = VectorXf::Zero(links.size()*3, 1);
 
     dR = j_inv*deltaP;
+//    cout << "dR norm: " << dR.norm();
 //    dR.normalize();
-    dR = step*dR;
+//    dR = step*dR;
     
-    /*
-    while (!decreased) {
-        prime = -j_inv*deltaP;
-        func = dR - j_inv*deltaP;
-        dR = dR - func.cwiseQuotient(prime);
-        cout << "new dR: "<< endl << dR << endl;
+    
+    int count = 0;
+    while (!decreased && count<3) {
+//        prime = -j_inv*deltaP;
+//        func = dR - j_inv*deltaP;
+//        dR = dR - func.cwiseQuotient(prime);
+//        cout << "new dR: "<< endl << dR << endl;
         moveby(dR);
         Vector3f newP = position();
-        cout << "old pos: "<<p(0)<<","<<p(1)<<","<<p(2)<<endl;
-        cout << "new pos: "<<newP(0)<<","<<newP(1)<<","<<newP(2)<<endl;
-        cout << "goal: "<<g(0)<<","<<g(1)<<","<<g(2)<<endl;
+//        cout << "old pos: "<<p(0)<<","<<p(1)<<","<<p(2)<<endl;
+//        cout << "new pos: "<<newP(0)<<","<<newP(1)<<","<<newP(2)<<endl;
+//        cout << "goal: "<<g(0)<<","<<g(1)<<","<<g(2)<<endl;
 //        unmove(dR);
+        count+=1;
         
         if ((newP-g).norm() < (p-g).norm()) {
             decreased = true;
         }else{
-//            dR = dR/2.0;
+            unmove(dR);
+            dR = dR/2.0;
             
         }
        
     }
-     */
+    if (count==3) {
+//        dR = dR*8;
+        moveby(dR);
+    }
+//    cout << "curr pos: "<<p(0)<<","<<p(1)<<","<<p(2)<<endl;
+    
 
-    moveby(dR);
+//    moveby(dR);
     return (position()-g).norm() < tolerance;
 }
