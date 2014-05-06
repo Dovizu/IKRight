@@ -22,15 +22,17 @@ class Link;
 class Arm {
     vector<Link*> links; //links from end effector to root in reverse order
     Vector3f rootPos = Vector3f(0,0,0);
+    float tolerance = 1;
 public:
     Arm(vector<LinkInfo>& linkData, Vector3f& root);
     //need to write destructor
     size_t size();
     Vector3f position();
-//    void moveby(vector<AnglePair>& angles);
+    void moveby(Vector3f& deltas);
     void graph();
     MatrixXf jacobian();
     MatrixXf pseudoInverse();
+    bool update(Vector3f& g);
 };
 
 #endif /* defined(__IKRight__Arm__) */

@@ -65,20 +65,27 @@ Vector3f Arm::position() {
     return pos;
 }
 /**
- *  moves the arm by the specified list of angle deltas
- *  @param angles list of AnglePairs that describe the delta of each angle
+ *  moves the arm by the specified list of deltas of rx, ry and rz
+ *  @param deltas: a list of deltas in order of rx, ry and rz, each tuple of three should correspond to a link
+ *  @invarinace: size of deltas list should be three times links.size()
  */
-
-
-/*
-void Arm::moveby(vector<AnglePair>& angles) {
-    ASSERT(angles.size()==links.size(), "Num of angles doesn't match num of links");
-    for (int i=0; i<angles.size(); ++i) {
-        links[i]->theta += angles[i].first;
-        links[i]->phi += angles[i].second;
+void Arm::moveby(Vector3f& deltas) {
+    ASSERT(deltas.size()/3==links.size(), "Num of angles doesn't match num of links");
+    for (int i=0; i<links.size(); ++i) {
+        links[i]->x+=deltas[i*3+0];
+        links[i]->y+=deltas[i*3+1];
+        links[i]->z+=deltas[i*3+2];
     }
 }
- */
+
+void Arm::unmove(Vector3f& deltas) {
+    ASSERT(deltas.size()/3==links.size(), "Num of angles doesn't match num of links");
+    for (int i=0; i<links.size(); ++i) {
+        links[i]->x-=deltas[i*3+0];
+        links[i]->y-=deltas[i*3+1];
+        links[i]->z-=deltas[i*3+2];
+    }
+}
 
 /**
  *  Graph the entire arm using OpenGL
@@ -137,4 +144,14 @@ MatrixXf Arm::pseudoInverse() {
     return (j.transpose() * jjtInv);
 }
 
-
+bool Arm::update(Vector3f& g) {
+    MatrixXf j_inv = pseudoInverse();
+    Vector3f p = position();
+    Vector3f deltas = Vector3f::Zero(links.size()*3, 1);
+    //newton's method
+    Vector3f deltaP = p - g;
+    
+    moveby(deltas);
+    graph();
+    return (position()-g).norm() < tolerance;
+}
