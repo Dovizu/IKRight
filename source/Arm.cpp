@@ -26,6 +26,12 @@ public:
         t = Transform3f(AngleAxisf(angle, Vector3f(x,y,z)))*t;
         return t;
     }
+    
+    Matrix3f rotationMat() {
+        Matrix3f rm;
+        rm = AngleAxisf(angle, Vector3f(x,y,z));
+        return rm;
+    }
 };
 
 #pragma mark - Arm Class
@@ -96,31 +102,29 @@ void Arm::graph() {
     glPopMatrix();
 }
 
-/*
 MatrixXf Arm::jacobian() {
-    MatrixXf jac = MatrixXf::Zero(3, links.size()*2);
-    float theta=0, phi=0;
+    MatrixXf jac = MatrixXf::Zero(3, links.size()*3);
+    //for each Jacobian block or each link
+    
     for (int li=0; li<links.size(); ++li) {
-        //col0 = theta, col1 = phi
-        Link& l = links[li];
-        theta += l.theta; phi += l.phi;
-        //compute partial derivatives
-        float pXpTheta = -l.length*sin(theta)*sin(phi);
-        float pXpPhi = l.length*cos(theta)*cos(phi);
-        float pYpTheta = l.length*cos(theta)*sin(phi);
-        float pYpPhi = l.length*sin(theta)*cos(phi);
-        float pZpTheta = 0.0f;
-        float pZpPhi = -l.length*sin(phi);
-        //compute the Jacobian
-        for (int colIdx=0; colIdx<li; ++colIdx) {
-            jac(0, 2*colIdx) += pXpTheta;
-            jac(1, 2*colIdx) += pYpTheta;
-            jac(2, 2*colIdx) += pZpTheta;
-            jac(0, 2*colIdx+1) += pXpPhi;
-            jac(1, 2*colIdx+1) += pYpPhi;
-            jac(2, 2*colIdx+1) += pZpPhi;
+        int ji = li*3;
+        Vector3f localVec = links[li]->tf()*Vector3f::Zero();
+        Matrix3f localJac;
+        localJac <<     0, localVec(2), -localVec(1),
+                        -localVec(2), 0, localVec(0),
+                        localVec(1), -localVec(0), 0;
+        Matrix3f t = Matrix3f::Identity();
+        for (int i=0; i<links.size(); ++i) {
+            if (i==li) {
+                t = t*localJac;
+            }else{
+                t = t*links[i]->rotationMat();
+            }
         }
+//        cout << "Local Jacobian of link " << li << " is this: " << endl;
+//        cout << "ji is " << ji << endl;
+//        cout << jac.block(0,ji,3,3) << endl;
+        jac.block(0,ji,3,3) << t;
     }
+    return jac;
 }
- 
- */

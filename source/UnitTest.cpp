@@ -24,7 +24,9 @@ void testArm() {
 //    links.push_back(link3);
     Arm arm(links, root);
     Vector3f pos = arm.position();
-    cout << pos << endl;
+    cout << pos << endl;c
+    MatrixXf jac = arm.jacobian();
+    cout << arm.jacobian() << endl;
 /*
     cout << &arm << endl;
     cout << "Testing construction" << endl;
