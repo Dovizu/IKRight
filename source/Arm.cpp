@@ -72,18 +72,18 @@ Vector3f Arm::position() {
 void Arm::moveby(VectorXf& deltas) {
     ASSERT(deltas.size()/3==links.size(), "Num of angles doesn't match num of links");
     for (int i=0; i<links.size(); ++i) {
-        links[i]->x+=deltas[i*3+0];
-        links[i]->y+=deltas[i*3+1];
-        links[i]->z+=deltas[i*3+2];
+        links[i]->x += deltas[i*3+0];
+        links[i]->y += deltas[i*3+1];
+        links[i]->z += deltas[i*3+2];
     }
 }
 
 void Arm::unmove(VectorXf& deltas) {
     ASSERT(deltas.size()/3==links.size(), "Num of angles doesn't match num of links");
     for (int i=0; i<links.size(); ++i) {
-        links[i]->x-=deltas[i*3+0];
-        links[i]->y-=deltas[i*3+1];
-        links[i]->z-=deltas[i*3+2];
+        links[i]->x -= deltas[i*3+0];
+        links[i]->y -= deltas[i*3+1];
+        links[i]->z -= deltas[i*3+2];
     }
 }
 
@@ -150,15 +150,21 @@ bool Arm::update(Vector3f& g) {
     VectorXf dR = VectorXf::Zero(links.size()*3, 1);
 
     //newton's method
-    Vector3f deltaP = p - g;
-    if (!(deltaP.norm()<step)) {
-        deltaP = step*deltaP.normalized();
-    }
-
+    Vector3f deltaP = g - p;
+    cout << "P is: " << endl << p << endl;
+//    if (!(deltaP.norm()<step)) {
+//        deltaP = step*deltaP.normalized();
+//    }
+    cout << "deltaP is: " <<endl<<deltaP<<endl;
     bool decreased = false;
     VectorXf prime = VectorXf::Zero(links.size()*3, 1);
     VectorXf func = VectorXf::Zero(links.size()*3, 1);
 
+    dR = j_inv*deltaP;
+//    dR.normalize();
+    dR = step*dR;
+    
+    /*
     while (!decreased) {
         prime = -j_inv*deltaP;
         func = dR - j_inv*deltaP;
@@ -179,6 +185,7 @@ bool Arm::update(Vector3f& g) {
         }
        
     }
+     */
 
     moveby(dR);
     graph();

@@ -31,7 +31,7 @@ LinkInfo link1 = {30, Vector3f(-1,1,0), M_PI/2};
 LinkInfo link2 = {20, Vector3f(-1,0,0), M_PI/2};
 //LinkInfo link3 = {20, 3*M_PI/4, M_PI/2};
 Arm* arm;
-Vector3f goal(-10, 10, 10);
+Vector3f goal(10, 10, 10);
 bool resolved = false;
 Vector3f targetPoint = Vector3f::Zero();
 
@@ -55,7 +55,7 @@ void display () {
 //    glRotatef(beta, 1, 0, 0);
     
     if (!resolved) {
-        arm->update(goal);
+        resolved = arm->update(goal);
     }
     
     glPushMatrix();
