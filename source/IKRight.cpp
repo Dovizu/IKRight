@@ -57,6 +57,7 @@ void display () {
     if (!resolved) {
         resolved = arm->update(goal);
     }
+    arm->graph();
     
     glPushMatrix();
     glColor3f(0.0f, 0.0f, 1.0f);

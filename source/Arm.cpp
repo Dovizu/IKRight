@@ -11,25 +11,26 @@
 class Link {
     friend class Arm;
 protected:
-    float length, x, y, z, angle; //normalized x, y, z and angle
+    float length; //normalized x, y, z and angle
+    Vector3f r;
     GLUquadricObj *quadric = gluNewQuadric();
 public:
     Link(float angle, Vector3f& axis, float length) {
         Vector3f nAxis = axis.normalized();
-        x=nAxis(0); y=nAxis(1); z=nAxis(2);
-        this->angle = angle;
+        r = axis;
+        r = r.normalized()*angle;
         this->length = length;
     }
     
     Transform3f tf() {
         Transform3f t = Transform3f(Translation3f(0,0,length));
-        t = Transform3f(AngleAxisf(angle, Vector3f(x,y,z)))*t;
+        t = Transform3f(AngleAxisf(r.norm(), r.normalized()))*t;
         return t;
     }
     
     Matrix3f rotationMat() {
         Matrix3f rm;
-        rm = AngleAxisf(angle, Vector3f(x,y,z));
+        rm = AngleAxisf(r.norm(), r.normalized());
         return rm;
     }
 };
@@ -72,18 +73,18 @@ Vector3f Arm::position() {
 void Arm::moveby(VectorXf& deltas) {
     ASSERT(deltas.size()/3==links.size(), "Num of angles doesn't match num of links");
     for (int i=0; i<links.size(); ++i) {
-        links[i]->x += deltas[i*3+0];
-        links[i]->y += deltas[i*3+1];
-        links[i]->z += deltas[i*3+2];
+        links[i]->r(0) += deltas[i*3+0];
+        links[i]->r(1) += deltas[i*3+1];
+        links[i]->r(2) += deltas[i*3+2];
     }
 }
 
 void Arm::unmove(VectorXf& deltas) {
     ASSERT(deltas.size()/3==links.size(), "Num of angles doesn't match num of links");
     for (int i=0; i<links.size(); ++i) {
-        links[i]->x -= deltas[i*3+0];
-        links[i]->y -= deltas[i*3+1];
-        links[i]->z -= deltas[i*3+2];
+        links[i]->r(0) -= deltas[i*3+0];
+        links[i]->r(1) -= deltas[i*3+1];
+        links[i]->r(2) -= deltas[i*3+2];
     }
 }
 
@@ -98,7 +99,7 @@ void Arm::graph() {
     glColor3f(0.0f, 1.0f, 1.0f);
     glutSolidSphere(2, 20, 20);
     for (int li=links.size()-1; li>=0; --li) {
-        glRotatef(degrees(links[li]->angle), links[li]->x,links[li]->y,links[li]->z);
+        glRotatef(degrees(links[li]->r.norm()), links[li]->r(0),links[li]->r(1),links[li]->r(2));
         glColor3f(1.0f, 0.0f, 0.0f);
         gluCylinder(links[li]->quadric, 1, 0, links[li]->length, 20, 20);
         glTranslatef(0,0,links[li]->length);
@@ -188,6 +189,5 @@ bool Arm::update(Vector3f& g) {
      */
 
     moveby(dR);
-    graph();
     return (position()-g).norm() < tolerance;
 }
