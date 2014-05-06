@@ -105,7 +105,7 @@ MatrixXf Arm::jacobian() {
     float theta=0, phi=0;
     for (int li=0; li<links.size(); ++li) {
         //col0 = theta, col1 = phi
-        Link& l = links[li];
+        Link& l = *links[li];
         theta += l.theta; phi += l.phi;
         //compute partial derivatives
         float pXpTheta = -l.length*sin(theta)*sin(phi);
@@ -115,7 +115,7 @@ MatrixXf Arm::jacobian() {
         float pZpTheta = 0.0f;
         float pZpPhi = -l.length*sin(phi);
         //compute the Jacobian
-        for (int colIdx=0; colIdx<li; ++colIdx) {
+        for (int colIdx=0; colIdx<=li; ++colIdx) {
             jac(0, 2*colIdx) += pXpTheta;
             jac(1, 2*colIdx) += pYpTheta;
             jac(2, 2*colIdx) += pZpTheta;
@@ -124,4 +124,5 @@ MatrixXf Arm::jacobian() {
             jac(2, 2*colIdx+1) += pZpPhi;
         }
     }
+    return jac;
 }

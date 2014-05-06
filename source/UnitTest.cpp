@@ -45,6 +45,7 @@ void testArm() {
     arm.moveby(moves);
     cout << "Should be: (3, 0, 0)" << endl;
     cout << arm.position() << endl;
+    cout << arm.jacobian() << endl;
 }
 
 #endif
