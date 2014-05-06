@@ -106,7 +106,7 @@ MatrixXf Arm::jacobian() {
     MatrixXf jac = MatrixXf::Zero(3, links.size()*3);
     //for each Jacobian block or each link
     
-    for (int li=0; li<links.size(); ++li) {
+    for (int li=links.size()-1; li>=0; --li) {
         int ji = li*3;
         Vector3f localVec = links[li]->tf()*Vector3f::Zero();
         Matrix3f localJac;
@@ -114,7 +114,7 @@ MatrixXf Arm::jacobian() {
                         -localVec(2), 0, localVec(0),
                         localVec(1), -localVec(0), 0;
         Matrix3f t = Matrix3f::Identity();
-        for (int i=0; i<links.size(); ++i) {
+        for (int i=links.size()-1; i>=0; --i) {
             if (i==li) {
                 t = t*localJac;
             }else{
@@ -128,3 +128,13 @@ MatrixXf Arm::jacobian() {
     }
     return jac;
 }
+
+MatrixXf Arm::pseudoInverse() {
+    MatrixXf j = jacobian();
+    MatrixXf jjtInv = (j * j.transpose());
+    jjtInv = jjtInv.inverse();
+    
+    return (j.transpose() * jjtInv);
+}
+
+

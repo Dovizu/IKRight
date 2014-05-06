@@ -30,6 +30,7 @@ public:
 //    void moveby(vector<AnglePair>& angles);
     void graph();
     MatrixXf jacobian();
+    MatrixXf pseudoInverse();
 };
 
 #endif /* defined(__IKRight__Arm__) */
