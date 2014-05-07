@@ -33,9 +33,11 @@ LinkInfo link3 = {10, Vector3f(-1,1,0), M_PI/2};
 LinkInfo link4 = {5, Vector3f(-1,0,0), M_PI/2};
 //LinkInfo link3 = {20, 3*M_PI/4, M_PI/2};
 Arm* arm;
-Vector3f goal(30, 0 , -50);
+Vector3f goal(30, 0 , -10);
 bool resolved = false;
 Vector3f targetPoint = Vector3f::Zero();
+
+vector<Vector3f> track;
 
 // This function is called to display the scene.
 float theta = 0;
@@ -69,7 +71,20 @@ void display () {
     goal(0)=cos(theta)*30;
     goal(1)=sin(theta)*30;
     cout << "Goal is: " << endl << goal << endl;
-
+    if (theta > 2*M_PI) {
+        theta -= 2*M_PI;
+        track.clear();
+    }
+    
+    track.push_back(goal);
+    for (auto& ball : track) {
+        glPushMatrix();
+        glColor3f(1,1,0);
+        glTranslatef(ball(0), ball(1), ball(2));
+        glutSolidSphere(1,10,10);
+        glPopMatrix();
+    }
+    
     arm->graph();
     
     glPushMatrix();

@@ -163,10 +163,10 @@ bool Arm::update(Vector3f& g) {
 
     dR = j_inv*deltaP;
 //    cout << "dR norm: " << dR.norm();
-    dR.normalize();
-    dR = step*dR;
+//    dR.normalize();
+//    dR = step*dR;
     
-    
+    /*
     int count = 0;
     while (!decreased && count<3) {
 //        prime = -j_inv*deltaP;
@@ -190,13 +190,16 @@ bool Arm::update(Vector3f& g) {
         }
        
     }
+     */
+    /*
     if (count==3 && !decreased) {
 //        dR = dR*8;
         moveby(dR);
     }
+     */
 //    cout << "curr pos: "<<p(0)<<","<<p(1)<<","<<p(2)<<endl;
     
 
-//    moveby(dR);
+    moveby(dR);
     return (position()-g).norm() < tolerance;
 }
