@@ -12,22 +12,25 @@
 #include "Arm.h"
 
 void testArm() {
-    /*
-    typedef struct {
-        float length;
-        float theta;
-        float phi;
-    } LinkInfo;
-     */
+
     vector<LinkInfo> links;
     Vector3f root(0,0,0);
-    LinkInfo link1 = {1, M_PI/4, M_PI/2};
-    LinkInfo link2 = {1, -M_PI/4, -M_PI/2};
-    LinkInfo link3 = {1, 3*M_PI/4, M_PI/2};
+    LinkInfo link1 = {1, Vector3f(-1,1,0), M_PI/2};
+    LinkInfo link2 = {1, Vector3f(-1,0,0), M_PI/2};
+//    LinkInfo link2 = {1, -M_PI/4, -M_PI/2};
+//    LinkInfo link3 = {1, 3*M_PI/4, M_PI/2};
     links.push_back(link1);
     links.push_back(link2);
-    links.push_back(link3);
+//    links.push_back(link3);
     Arm arm(links, root);
+    Vector3f pos = arm.position();
+    cout << pos << endl;
+    MatrixXf jac = arm.jacobian();
+    cout << "This is the jacobian" << endl;
+    cout << arm.jacobian() << endl;
+    cout << "This is the peudoInverse of the jacobian" << endl;
+    cout << arm.pseudoInverse() << endl;
+/*
     cout << &arm << endl;
     cout << "Testing construction" << endl;
     cout << "Should be: (0, 1.4, 1)" << endl;

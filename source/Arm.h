@@ -12,24 +12,29 @@
 
 typedef struct {
     float length;
-    float theta;
-    float phi;
+    Vector3f axis;
+    float angle;
 } LinkInfo;
-typedef pair<float, float> AnglePair;
+
 #define degrees(x) x*180/3.1415926
 
 class Link;
 class Arm {
-    vector<Link*> links;
+    vector<Link*> links; //links from end effector to root in reverse order
     Vector3f rootPos = Vector3f(0,0,0);
+    float tolerance = 1;
+    float step = 0.05;
 public:
     Arm(vector<LinkInfo>& linkData, Vector3f& root);
     //need to write destructor
     size_t size();
     Vector3f position();
-    void moveby(vector<AnglePair>& angles);
+    void moveby(VectorXf& deltas);
+    void unmove(VectorXf& deltas);
     void graph();
     MatrixXf jacobian();
+    MatrixXf pseudoInverse();
+    bool update(Vector3f& g);
 };
 
 #endif /* defined(__IKRight__Arm__) */

@@ -27,14 +27,21 @@ double fovy = 40.0;
 
 vector<LinkInfo> links;
 Vector3f root(0,0,0);
-LinkInfo link1 = {20, M_PI/4, M_PI/2};
-LinkInfo link2 = {20, -M_PI/4, -M_PI/2};
-LinkInfo link3 = {20, 3*M_PI/4, M_PI/2};
+LinkInfo link1 = {30, Vector3f(-1,1,0), M_PI/2};
+LinkInfo link2 = {20, Vector3f(-1,0,0), M_PI/2};
+LinkInfo link3 = {10, Vector3f(-1,1,0), M_PI/2};
+LinkInfo link4 = {5, Vector3f(-1,0,0), M_PI/2};
+//LinkInfo link3 = {20, 3*M_PI/4, M_PI/2};
 Arm* arm;
-
+Vector3f goal(30, 0 , -10);
+bool resolved = false;
 Vector3f targetPoint = Vector3f::Zero();
 
+vector<Vector3f> track;
+
 // This function is called to display the scene.
+float theta = 0;
+float degree = 3.1415926535897932384626433832795 / 180;
 void display () {
     glEnable(GL_LIGHTING);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -52,6 +59,31 @@ void display () {
 //    beta = 180.0 * yMouse;
 //    glRotatef(alpha, 0, 1, 0);
 //    glRotatef(beta, 1, 0, 0);
+    
+//    if (!resolved) {
+//        resolved = arm->update(goal);
+//    }
+    while (!resolved) {
+        resolved = arm->update(goal);
+    }
+    resolved=false;
+    theta += degree/2;
+    goal(0)=cos(theta)*30;
+    goal(1)=sin(theta)*30;
+    cout << "Goal is: " << endl << goal << endl;
+    if (theta > 2*M_PI) {
+        theta -= 2*M_PI;
+        track.clear();
+    }
+    
+    track.push_back(goal);
+    for (auto& ball : track) {
+        glPushMatrix();
+        glColor3f(1,1,0);
+        glTranslatef(ball(0), ball(1), ball(2));
+        glutSolidSphere(1,10,10);
+        glPopMatrix();
+    }
     
     arm->graph();
     
@@ -139,9 +171,11 @@ int main(int argc, char *argv[]) {
         }
     }
     
-    links.push_back(link1);
-    links.push_back(link2);
+    links.push_back(link4);
     links.push_back(link3);
+    links.push_back(link2);
+    links.push_back(link1);
+
     arm = new Arm(links, root);
     
     // GLUT initialization.
