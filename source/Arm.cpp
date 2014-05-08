@@ -16,22 +16,16 @@ protected:
     GLUquadricObj *quadric = gluNewQuadric();
 public:
     Link(float angle, Vector3f& axis, float length) {
-        Vector3f nAxis = axis.normalized();
-        r = axis;
-        r = r.normalized()*angle;
+        r = axis.normalized()*angle;
         this->length = length;
     }
     
-    Transform3f tf() {
-        Transform3f t = Transform3f(Translation3f(0,0,length));
-        t = Transform3f(AngleAxisf(r.norm(), r.normalized()))*t;
-        return t;
+    Transform3f R() {
+        return Transform3f(AngleAxisf(r.norm(), r.normalized()));
     }
     
-    Matrix3f rotationMat() {
-        Matrix3f rm;
-        rm = AngleAxisf(r.norm(), r.normalized());
-        return rm;
+    Transform3f T() {
+        return Transform3f(Translation3f(0,0,length));
     }
 };
 
@@ -60,7 +54,7 @@ size_t Arm::size() {return links.size();}
 Vector3f Arm::position() {
     Vector3f pos = Vector3f::Zero();
     for (int li=0; li<links.size(); ++li) {
-        pos = links[li]->tf()*pos;
+        pos = links[li]->R()*links[li]->T()*pos;
     }
     pos = Translation3f(rootPos(0),rootPos(1),rootPos(2))*pos;
     return pos;
@@ -96,8 +90,10 @@ void Arm::unmove(VectorXf& deltas) {
 void Arm::graph() {
     //need to Assert that OPENGL is initialized and working
     glPushMatrix();
+    
     glColor3f(0.0f, 1.0f, 1.0f);
     glutSolidSphere(2, 20, 20);
+    
     for (int li=links.size()-1; li>=0; --li) {
         glRotatef(degrees(links[li]->r.norm()), links[li]->r(0),links[li]->r(1),links[li]->r(2));
         glColor3f(1.0f, 0.0f, 0.0f);
@@ -107,36 +103,130 @@ void Arm::graph() {
         glutSolidSphere(1, 20, 20);
     }
     glTranslatef(rootPos(0),rootPos(1),rootPos(2));
+     
     glPopMatrix();
 }
 
 MatrixXf Arm::jacobian() {
-    MatrixXf jac = MatrixXf::Zero(3, links.size()*2);
-    float theta=0, phi=0;
-    for (int li=0; li<links.size(); ++li) {
-        //col0 = theta, col1 = phi
-        Link& l = *links[li];
-        theta += l.theta; phi += l.phi;
-        //compute partial derivatives
-        float pXpTheta = -l.length*sin(theta)*sin(phi);
-        float pXpPhi = l.length*cos(theta)*cos(phi);
-        float pYpTheta = l.length*cos(theta)*sin(phi);
-        float pYpPhi = l.length*sin(theta)*cos(phi);
-        float pZpTheta = 0.0f;
-        float pZpPhi = -l.length*sin(phi);
-        //compute the Jacobian
-        for (int colIdx=0; colIdx<=li; ++colIdx) {
-            jac(0, 2*colIdx) += pXpTheta;
-            jac(1, 2*colIdx) += pYpTheta;
-            jac(2, 2*colIdx) += pZpTheta;
-            jac(0, 2*colIdx+1) += pXpPhi;
-            jac(1, 2*colIdx+1) += pYpPhi;
-            jac(2, 2*colIdx+1) += pZpPhi;
+    MatrixXf jac = MatrixXf::Zero(3, links.size()*3);
+    //for each Jacobian block or each link
+    
+    /*
+    for (int li=links.size()-1; li>=0; --li) {
+        int ji = li*3;
+        Vector3f localVec = links[li]->tf()*Vector3f::Zero();
+        Matrix3f localJac;
+        localJac <<     0, localVec(2), -localVec(1),
+                        -localVec(2), 0, localVec(0),
+                        localVec(1), -localVec(0), 0;
+        Matrix3f t = Matrix3f::Identity();
+        for (int i=links.size()-1; i>=0; --i) {
+            if (i==li) {
+                t = t*localJac;
+            }else{
+                t = t*links[i]->rotationMat();
+            }
         }
 //        cout << "Local Jacobian of link " << li << " is this: " << endl;
 //        cout << "ji is " << ji << endl;
 //        cout << jac.block(0,ji,3,3) << endl;
         jac.block(0,ji,3,3) << t;
     }
+     */
+    
+    for (int li=0; li<links.size(); ++li) {
+        int ji = li*3;
+        Vector4f localVec = Vector4f::Zero(); //most outboard link
+        localVec(3) = 1;
+        
+        int i;
+        Matrix4f localJac;
+        for (i=0; i<links.size(); ++i) {
+            if (i==li) {
+                localVec = links[i]->T()*localVec;
+                localJac <<     0, localVec(2), -localVec(1), 0,
+                                -localVec(2), 0, localVec(0), 0,
+                                localVec(1), -localVec(0), 0, 0,
+                                0,          0,      0,      1; //try last number = 1 if doesn't work
+                localJac = links[i]->R()*localJac;
+            }else if (i < li) {
+                localVec = links[i]->R()*links[i]->T()*localVec;
+            }else if (i > li) {
+                localJac = links[i]->R()*links[i]->T()*localJac;
+            }
+        }
+        localJac = Transform3f(Translation3f(rootPos(0),rootPos(1),rootPos(2)))*localJac;
+        jac.block(0,ji,3,3) << localJac.block(0,0,3,3);
+        cout << "Jacobian: \n" << localJac << endl;
+    }
+    //need to change the order of move-by
+//    cout << "Jacobian: \n" << jac << endl;
     return jac;
+}
+
+MatrixXf Arm::pseudoInverse() {
+    MatrixXf j = jacobian();
+    MatrixXf jjtInv = (j * j.transpose());
+    jjtInv = jjtInv.inverse();
+    
+    return (j.transpose() * jjtInv);
+}
+
+bool Arm::update(Vector3f& g) {
+    MatrixXf j_inv = pseudoInverse();
+    Vector3f p = position();
+    VectorXf dR = VectorXf::Zero(links.size()*3, 1);
+
+    //newton's method
+    Vector3f dP = g-p;
+//    Vector4f dP = Vector4f(deltaP(0),deltaP(1),deltaP(2),1);
+    
+//    Vector4f dP = Vector4f(deltaP, 1);
+//    cout << "P is: " << endl << p << endl;
+//    if (!(deltaP.norm()<step)) {
+//        deltaP = step*deltaP.normalized();
+//    }
+//    cout << "deltaP is: " <<endl<<deltaP<<endl;
+    bool decreased = false;
+
+    dR = j_inv*dP;
+    cout << "dR: \n" << dR << endl;
+//    cout << "dR norm: " << dR.norm();
+    dR.normalize();
+//    cout << "normalized dR: \n" << dR << endl;
+    dR = step*dR;
+    cout << "step*dR: \n" << dR << endl;
+
+
+    int MAX = 5;
+    int count = 0;
+    while (!decreased && count < MAX) {
+        moveby(dR);
+        Vector3f newP = position();
+        cout << "New position: " << newP << endl;
+        
+        count+=1;
+        if ((newP-g).norm() < (p-g).norm()) {
+            decreased = true;
+        }else{
+            unmove(dR);
+            dR = dR/2.0;
+        }
+    }
+
+
+
+
+    if (count==MAX && !decreased) {
+//        return true;
+        moveby(dR);
+    }
+
+
+//    cout << "curr pos: "<<p(0)<<","<<p(1)<<","<<p(2)<<endl;
+    
+
+//    moveby(dR);
+    cout << "Position: " << position() << endl;
+    return (position()-g).norm() < tolerance ;
 }

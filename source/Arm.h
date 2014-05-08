@@ -17,13 +17,14 @@ typedef struct {
 } LinkInfo;
 
 #define degrees(x) x*180/3.1415926
+#define radians(x) 3.1415926*(x/180)
 
 class Link;
 class Arm {
     vector<Link*> links; //links from end effector to root in reverse order
     Vector3f rootPos = Vector3f(0,0,0);
     float tolerance = 1;
-    float step = 0.05;
+    float step = 0.1;
 public:
     Arm(vector<LinkInfo>& linkData, Vector3f& root);
     //need to write destructor

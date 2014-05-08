@@ -33,6 +33,7 @@ LinkInfo link3 = {10, Vector3f(-1,1,0), M_PI/2};
 LinkInfo link4 = {5, Vector3f(-1,0,0), M_PI/2};
 //LinkInfo link3 = {20, 3*M_PI/4, M_PI/2};
 Arm* arm;
+//Vector3f goal(30, 0 , -10);
 Vector3f goal(30, 0 , -10);
 bool resolved = false;
 Vector3f targetPoint = Vector3f::Zero();
@@ -49,7 +50,7 @@ void display () {
     glLoadIdentity();
     
     // Translate using Y mouse.
-    glTranslatef(0, -10, -100);
+    glTranslatef(0, 0, -100);
     
     // Rotation from idle function.
 //    glRotatef(90, 0, 0, 1);
@@ -65,11 +66,12 @@ void display () {
 //    }
     while (!resolved) {
         resolved = arm->update(goal);
+        cout<< "result: " <<resolved<<endl;
     }
     resolved=false;
     theta += degree/2;
     goal(0)=cos(theta)*30;
-    goal(1)=sin(theta)*30;
+    goal(1)=sin(theta)*cos(theta)*30 + 10;
     cout << "Goal is: " << endl << goal << endl;
     if (theta > 2*M_PI) {
         theta -= 2*M_PI;
