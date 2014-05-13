@@ -1,8 +1,8 @@
 Project Identity
 ================
 ###Names
-- Leo Colobong
-- Donny Reynolds
+- Leo Colobong (@lcolobong)
+- Donny Reynolds (@dovizu)
 
 ###Platform
 `OS X` (Orchard Macs)
@@ -11,7 +11,7 @@ Project Identity
 `./`
 
 ###Submitted by
-cs61b-bm
+cs184-bm
 
 ###Compile Instruction
 `make`
