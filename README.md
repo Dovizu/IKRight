@@ -11,7 +11,7 @@ Project Identity
 `./`
 
 ###Submitted by
-cs61b-bw
+cs61b-bm
 
 ###Compile Instruction
 `make`
@@ -19,28 +19,22 @@ cs61b-bw
 ###Credits
 - [OpenGL Skeleton from Alenxandros Dermenakis tutorials](http://www.alexandrosdermenakis.com)
 
+###Special Thanks to
+- Mom
+
 Demonstration
 ====================
 
-###Core: Uniform Shading (Step size: 0.1)
-Flat vs Smooth Shading `./renderBezier -f bezFiles/teapot.bez 0.1` + `press s` + `press w`
-![teapot-u-flat](/examples/teapot_u_flat.png)
-![teapot-u-smooth](/examples/teapot_u_smooth.png)
-![teapot-u-wire](/examples/teapot_u_wire.png)
+Note: Due to screen recording software, our program runs slower than usual. Normally, the arm should track 2x as fast.
 
-###Core: Adaptive Shading (Error tolerance: 0.01)
-Flat vs Smooth Shading `./renderBezier -f bezFiles/teapot.bez 0.01 -a` + `press s` + `press w`
-![teapot-a-flat](/examples/teapot_a_flat.png)
-![teapot-a-smooth](/examples/teapot_a_smooth.png)
-![teapot-a-wire](/examples/teapot_a_wire.png)
+###Solving Inverse Kinematics (Circle)
+[![demo-circle](https://raw.githubusercontent.com/Dovizu/IKRight/submission/pics/circle.png?token=3336363__eyJzY29wZSI6IlJhd0Jsb2I6RG92aXp1L0lLUmlnaHQvc3VibWlzc2lvbi9waWNzL2NpcmNsZS5wbmciLCJleHBpcmVzIjoxNDAwNjExNTkwfQ%3D%3D--a34a186985677cc32cf6d72efc06e8e713098bd6)](https://www.youtube.com/watch?v=2Y-7WiZopxY)
 
-###Core: Transformation, Shading Modes and Fill Modes
+###Solving Inverse Kinematics (Infinity)
+[![demo-infinity](https://raw.githubusercontent.com/Dovizu/IKRight/submission/pics/figure8.png?token=3336363__eyJzY29wZSI6IlJhd0Jsb2I6RG92aXp1L0lLUmlnaHQvc3VibWlzc2lvbi9waWNzL2ZpZ3VyZTgucG5nIiwiZXhwaXJlcyI6MTQwMDYxMTg1NH0%3D--20a67794218758bbbc1e6eb3d1eb1f9a6627f636)](https://www.youtube.com/watch?v=qXrru3xCnck)
 
-###Extra Feature: Convert OBJ to BEZ Patches
-`./renderBezier -f bezFiles/bunny.bez 0.1 -a`
-
-Note: some errors come from our [obj2bez.py](obj/obj2bez.py) converter.
-![bunny](/examples/bunny.png)
+###Solving Inverse Kinematics (Out of Reach)
+[![demo-out](https://raw.githubusercontent.com/Dovizu/IKRight/submission/pics/outofrange.png?token=3336363__eyJzY29wZSI6IlJhd0Jsb2I6RG92aXp1L0lLUmlnaHQvc3VibWlzc2lvbi9waWNzL291dG9mcmFuZ2UucG5nIiwiZXhwaXJlcyI6MTQwMDYxMTkwNX0%3D--48951e54f9ef8718d8f6e2f1fd51ef439ef2cf00)](https://www.youtube.com/watch?v=KNfHxGF4lKY)
 
 ###
 Directory Structure
@@ -49,46 +43,7 @@ Directory Structure
 - `libraries/`: external libraries
 - `source/`: source code
 - `Makefile`
-- `.gitignore`
-- `BezierSurfaceRenderer.xcodeproj`: XCode project settings
-- `bezFiles/`: default bez files for testing
-- `examples/`: submitted examples
-- `obj/`: obj2bez.py parser and other obj files
-
-Command Line Usage
-=====================
-
-`./renderBezier [-f path/To/File.bez | -d path/to/dir/] stepSize|epsilon [-a] [--opengl3]`
-
-##Parameters
-`-f path/To/File.bez`: renders a single Bezier file (relative), the file must end in `.bez`
-
-`-d path/to/dir/`: renders all the `.bez` files in the specified directory, the trailing `/` is required
-
-`-a`: if `-a` is specified, adaptive tessellation will be used, otherwise uniform tessellation will be used
-
-`--opengl3`: enables our incomplete extra credit modern OpenGL 3.2+ pipeline, no Phong shading is implemented, but all transformations work correctly
-
-GUI Usage
-=====================
-
-##Drawing Control
-`w`: press `w` to toggle between Wireframe and Filled drawing mode
-
-`s`: press `s` to toggle between Smooth shading and Flat shading
-
-`h`: press `h` to toggle between Hidden Line Removal mode and regular mode
-
-`ESC`: press `ESC` to exit
-
-##Transformations
-`+/-`: press `+/-` to zoom in/out
-
-`UP/DOWN/LEFT/RIGHT`: translate
-
-`SHIFT + UP/DOWN/LEFT/RIGHT`: rotate
-
-`Left Mouse Click`: open up a menu to choose which object to transform, selected object will be highlighted
+- `IKRight.xcodeproj`: XCode project settings
 
 Documentation
 =====================
@@ -99,10 +54,3 @@ Documentation
 - GLEW ([Doc](http://glew.sourceforge.net/install.html))
 - GLUT ([Doc](http://www.opengl.org/resources/libraries/glut/))
 - OpenGL
-
-##Main Classes
-###BEZParser
-Parses BEZ files containing patch data
-###Tessellation
-####UniformTessellation
-####AdaptiveTessellation

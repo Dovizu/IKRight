@@ -143,7 +143,7 @@ MatrixXf Arm::jacobian() {
         Matrix4f localJac;
         for (i=0; i<links.size(); ++i) {
             if (i==li) {
-                localVec = links[i]->T()*localVec;
+                localVec = links[i]->T().matrix()*localVec;
                 localJac <<     0, localVec(2), -localVec(1), 0,
                                 -localVec(2), 0, localVec(0), 0,
                                 localVec(1), -localVec(0), 0, 0,
@@ -151,16 +151,19 @@ MatrixXf Arm::jacobian() {
                 localJac = links[i]->R()*localJac;
             }else if (i < li) {
                 localVec = links[i]->R()*links[i]->T()*localVec;
+//                localVec = links[i]->T()*localVec;
             }else if (i > li) {
                 localJac = links[i]->R()*links[i]->T()*localJac;
+//                localJac = links[i]->R()*localJac;
             }
         }
         localJac = Transform3f(Translation3f(rootPos(0),rootPos(1),rootPos(2)))*localJac;
         jac.block(0,ji,3,3) << localJac.block(0,0,3,3);
-        cout << "Jacobian: \n" << localJac << endl;
+//        cout << "jacBlock: \n" << jac.block(0,ji,3,3) << endl;
+//        cout << "Jacobian: \n" << localJac << endl;
     }
     //need to change the order of move-by
-//    cout << "Jacobian: \n" << jac << endl;
+    cout << "Jacobian: \n" << jac << endl;
     return jac;
 }
 
@@ -198,7 +201,7 @@ bool Arm::update(Vector3f& g) {
     cout << "step*dR: \n" << dR << endl;
 
 
-    int MAX = 5;
+    int MAX = 10;
     int count = 0;
     while (!decreased && count < MAX) {
         moveby(dR);
@@ -218,8 +221,9 @@ bool Arm::update(Vector3f& g) {
 
 
     if (count==MAX && !decreased) {
-//        return true;
-        moveby(dR);
+//        moveby(dR);
+        return true;
+//        moveby(dR);
     }
 
 

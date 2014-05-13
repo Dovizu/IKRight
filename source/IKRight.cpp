@@ -27,10 +27,14 @@ double fovy = 40.0;
 
 vector<LinkInfo> links;
 Vector3f root(0,0,0);
-LinkInfo link1 = {30, Vector3f(-1,1,0), M_PI/2};
-LinkInfo link2 = {20, Vector3f(-1,0,0), M_PI/2};
-LinkInfo link3 = {10, Vector3f(-1,1,0), M_PI/2};
-LinkInfo link4 = {5, Vector3f(-1,0,0), M_PI/2};
+//LinkInfo link1 = {5, Vector3f(-1,1,0), M_PI/2};
+//LinkInfo link2 = {5, Vector3f(-1,0,0), M_PI/2};
+//LinkInfo link3 = {5, Vector3f(-1,1,0), M_PI/2};
+//LinkInfo link4 = {5, Vector3f(-1,0,0), M_PI/2};
+LinkInfo link1 = {30, Vector3f(0,1,0), 1};
+LinkInfo link2 = {20, Vector3f(0,1,0), 1};
+LinkInfo link3 = {10, Vector3f(0,1,0), 1};
+LinkInfo link4 = {5, Vector3f(0,1,0), 1};
 //LinkInfo link3 = {20, 3*M_PI/4, M_PI/2};
 Arm* arm;
 //Vector3f goal(30, 0 , -10);
@@ -73,8 +77,9 @@ void display () {
     goal(0)=cos(theta)*30;
     goal(1)=sin(theta)*cos(theta)*30 + 10;
     cout << "Goal is: " << endl << goal << endl;
-    if (theta > 2*M_PI) {
+    if (theta >= 2*M_PI) {
         theta -= 2*M_PI;
+//        theta=0;
         track.clear();
     }
     
