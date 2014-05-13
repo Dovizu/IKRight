@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Inverse Kinematics Solver by Dovizu</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/Dovizu/IKRight">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/Dovizu/IKRight/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/Dovizu/IKRight/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Inverse Kinematics Solver</h1>
+          <p>Inverse Kinematics Solver</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/Dovizu">Dovizu</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a name="project-identity" class="anchor" href="#project-identity"><span class="octicon octicon-link"></span></a>Project Identity</h1>
+
+<h3>
+<a name="names" class="anchor" href="#names"><span class="octicon octicon-link"></span></a>Names</h3>
+
+<ul>
+<li>Leo Colobong</li>
+<li>Donny Reynolds</li>
+</ul><h3>
+<a name="platform" class="anchor" href="#platform"><span class="octicon octicon-link"></span></a>Platform</h3>
+
+<p><code>OS X</code> (Orchard Macs)</p>
+
+<h3>
+<a name="source-location" class="anchor" href="#source-location"><span class="octicon octicon-link"></span></a>Source Location</h3>
+
+<p><code>./</code></p>
+
+<h3>
+<a name="submitted-by" class="anchor" href="#submitted-by"><span class="octicon octicon-link"></span></a>Submitted by</h3>
+
+<p>cs61b-bm</p>
+
+<h3>
+<a name="compile-instruction" class="anchor" href="#compile-instruction"><span class="octicon octicon-link"></span></a>Compile Instruction</h3>
+
+<p><code>make</code></p>
+
+<h3>
+<a name="credits" class="anchor" href="#credits"><span class="octicon octicon-link"></span></a>Credits</h3>
+
+<ul>
+<li><a href="http://www.alexandrosdermenakis.com">OpenGL Skeleton from Alenxandros Dermenakis tutorials</a></li>
+</ul><h3>
+<a name="special-thanks-to" class="anchor" href="#special-thanks-to"><span class="octicon octicon-link"></span></a>Special Thanks to</h3>
+
+<ul>
+<li>Mom</li>
+</ul><h1>
+<a name="demonstration" class="anchor" href="#demonstration"><span class="octicon octicon-link"></span></a>Demonstration</h1>
+
+<p>Note: Due to screen recording software, our program runs slower than usual. Normally, the arm should track 2x as fast.</p>
+
+<h3>
+<a name="solving-inverse-kinematics-circle" class="anchor" href="#solving-inverse-kinematics-circle"><span class="octicon octicon-link"></span></a>Solving Inverse Kinematics (Circle)</h3>
+
+<p><a href="https://www.youtube.com/watch?v=2Y-7WiZopxY"><img src="https://raw.githubusercontent.com/Dovizu/IKRight/submission/pics/circle.png?token=3336363__eyJzY29wZSI6IlJhd0Jsb2I6RG92aXp1L0lLUmlnaHQvc3VibWlzc2lvbi9waWNzL2NpcmNsZS5wbmciLCJleHBpcmVzIjoxNDAwNjExNTkwfQ%3D%3D--a34a186985677cc32cf6d72efc06e8e713098bd6" alt="demo-circle"></a></p>
+
+<h3>
+<a name="solving-inverse-kinematics-infinity" class="anchor" href="#solving-inverse-kinematics-infinity"><span class="octicon octicon-link"></span></a>Solving Inverse Kinematics (Infinity)</h3>
+
+<p><a href="https://www.youtube.com/watch?v=qXrru3xCnck"><img src="https://raw.githubusercontent.com/Dovizu/IKRight/submission/pics/figure8.png?token=3336363__eyJzY29wZSI6IlJhd0Jsb2I6RG92aXp1L0lLUmlnaHQvc3VibWlzc2lvbi9waWNzL2ZpZ3VyZTgucG5nIiwiZXhwaXJlcyI6MTQwMDYxMTg1NH0%3D--20a67794218758bbbc1e6eb3d1eb1f9a6627f636" alt="demo-infinity"></a></p>
+
+<h3>
+<a name="solving-inverse-kinematics-out-of-reach" class="anchor" href="#solving-inverse-kinematics-out-of-reach"><span class="octicon octicon-link"></span></a>Solving Inverse Kinematics (Out of Reach)</h3>
+
+<p><a href="https://www.youtube.com/watch?v=KNfHxGF4lKY"><img src="https://raw.githubusercontent.com/Dovizu/IKRight/submission/pics/outofrange.png?token=3336363__eyJzY29wZSI6IlJhd0Jsb2I6RG92aXp1L0lLUmlnaHQvc3VibWlzc2lvbi9waWNzL291dG9mcmFuZ2UucG5nIiwiZXhwaXJlcyI6MTQwMDYxMTkwNX0%3D--48951e54f9ef8718d8f6e2f1fd51ef439ef2cf00" alt="demo-out"></a></p>
+
+<h1>
+<a name="directory-structure" class="anchor" href="#directory-structure"><span class="octicon octicon-link"></span></a>Directory Structure</h1>
+
+<ul>
+<li>
+<code>build/</code>: temporary object files for linking (need to be created)</li>
+<li>
+<code>libraries/</code>: external libraries</li>
+<li>
+<code>source/</code>: source code</li>
+<li><code>Makefile</code></li>
+<li>
+<code>IKRight.xcodeproj</code>: XCode project settings</li>
+</ul><h1>
+<a name="documentation" class="anchor" href="#documentation"><span class="octicon octicon-link"></span></a>Documentation</h1>
+
+<h2>
+<a name="external-libraries" class="anchor" href="#external-libraries"><span class="octicon octicon-link"></span></a>External Libraries</h2>
+
+<ul>
+<li>Eigen</li>
+<li>GLFW (<a href="http://www.glfw.org/docs/latest/pages.html">Doc</a>)</li>
+<li>GLEW (<a href="http://glew.sourceforge.net/install.html">Doc</a>)</li>
+<li>GLUT (<a href="http://www.opengl.org/resources/libraries/glut/">Doc</a>)</li>
+<li>OpenGL</li>
+</ul>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
