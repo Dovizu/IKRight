@@ -11,7 +11,7 @@ Project Identity
 `./`
 
 ###Submitted by
-cs61b-bw
+cs61b-bm
 
 ###Compile Instruction
 `make`
@@ -19,14 +19,14 @@ cs61b-bw
 ###Credits
 - [OpenGL Skeleton from Alenxandros Dermenakis tutorials](http://www.alexandrosdermenakis.com)
 
+###Special Thanks to
+- Mom
+
 Demonstration
 ====================
 
-###Core: Uniform Shading (Step size: 0.1)
-Flat vs Smooth Shading `./renderBezier -f bezFiles/teapot.bez 0.1` + `press s` + `press w`
-![teapot-u-flat](/examples/teapot_u_flat.png)
-![teapot-u-smooth](/examples/teapot_u_smooth.png)
-![teapot-u-wire](/examples/teapot_u_wire.png)
+Solving Inverse Kinematics
+![demo-circle](/examples/teapot_u_flat.png)
 
 ###Core: Adaptive Shading (Error tolerance: 0.01)
 Flat vs Smooth Shading `./renderBezier -f bezFiles/teapot.bez 0.01 -a` + `press s` + `press w`
