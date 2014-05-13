@@ -25,6 +25,8 @@ cs61b-bm
 Demonstration
 ====================
 
+Note: Due to screen recording software, our program runs slower than usual. Normally, the arm should track 2x as fast.
+
 ###Solving Inverse Kinematics (Circle)
 [![demo-circle](https://raw.githubusercontent.com/Dovizu/IKRight/submission/pics/circle.png?token=3336363__eyJzY29wZSI6IlJhd0Jsb2I6RG92aXp1L0lLUmlnaHQvc3VibWlzc2lvbi9waWNzL2NpcmNsZS5wbmciLCJleHBpcmVzIjoxNDAwNjExNTkwfQ%3D%3D--a34a186985677cc32cf6d72efc06e8e713098bd6)](https://www.youtube.com/watch?v=2Y-7WiZopxY)
 
